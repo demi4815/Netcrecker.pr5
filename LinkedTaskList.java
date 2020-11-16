@@ -21,167 +21,234 @@ public class LinkedTaskList extends AbstractTaskList
     @Override
     public void add(Task task)
     {
-        assert(task != null);
-
-        task.title = startOfTitle + " " + task.title;
-
-        LinkedTaskList node = new LinkedTaskList(task);
-
-        if (head == null)
+        try
         {
-            head = node;
-            tail = node;
-        }
-        else
-        {
-            tail.next = node;
-            tail = node;
-        }
+            if (task == null)
+            {
+                throw  new NullPointerException();
+            }
 
-        count++;
+            task.title = startOfTitle + " " + task.title;
+
+            LinkedTaskList node = new LinkedTaskList(task);
+
+            if (head == null)
+            {
+                head = node;
+                tail = node;
+            }
+            else
+            {
+                tail.next = node;
+                tail = node;
+            }
+
+            count++;
+        }
+        catch (NullPointerException e)
+        {
+            System.out.println("Method add: The task does not exist (task = null)");
+        }
     }
 
     @Override
     public void add(int index, Task task)
     {
-        assert(index >= 0 && index < count);
-
-        task.title = startOfTitle + " " + task.title;
-
-        LinkedTaskList node = new LinkedTaskList(task);
-
-        LinkedTaskList current = head;
-
-        if (index == 0)
+        try
         {
-            node.next = head;
-            head = node;
-        }
+            if (task == null)
+            {
+                throw  new NullPointerException();
+            }
+
+            if(index < 0 || index >= count)
+            {
+                throw new IndexOutOfBoundsException();
+            }
+
+
+            task.title = startOfTitle + " " + task.title;
+
+            LinkedTaskList node = new LinkedTaskList(task);
+
+            LinkedTaskList current = head;
+
+            if (index == 0)
+            {
+                node.next = head;
+                head = node;
+            }
             else if(index == count - 1)
             {
                 add(task);
             }
-                else
+            else
+            {
+                int k = 0;
+                while (k < index - 1)
                 {
-                    int k = 0;
-                    while (k < index - 1)
-                    {
-                        current = current.next;
-                        k++;
-                    }
-
-                    LinkedTaskList tmp = new LinkedTaskList();
-                    tmp = current.next;
-                    current.next = node;
-                    node.next = tmp;
+                    current = current.next;
+                    k++;
                 }
 
-        count++;
+                LinkedTaskList tmp = new LinkedTaskList();
+                tmp = current.next;
+                current.next = node;
+                node.next = tmp;
+            }
+
+            count++;
+        }
+        catch (NullPointerException e)
+        {
+            System.out.println("Method add: The task does not exist (task = null)");
+        }
+        catch (IndexOutOfBoundsException e)
+        {
+            System.out.println("Method add: Invalid index");
+        }
     }
 
     @Override
     public void remove(Task task)
     {
-        assert(task != null);
-
-        LinkedTaskList previous = null;
-        LinkedTaskList current = head;
-
-        while (current != null)
+        try
         {
-            if (current.task.equals(task))
+            if (task == null)
             {
-                if (previous != null)
-                {
-                    previous.next = current.next;
-
-                    if (current.next == null)
-                    {
-                        tail = previous;
-                    }
-                }
-                else
-                {
-                    head = head.next;
-
-                    if (head == null)
-                    {
-                        tail = null;
-                    }
-                }
-
-                count--;
-                break;
+                throw  new NullPointerException();
             }
 
-            previous = current;
-            current = current.next;
+            LinkedTaskList previous = null;
+            LinkedTaskList current = head;
+
+            while (current != null)
+            {
+                if (current.task.equals(task))
+                {
+                    if (previous != null)
+                    {
+                        previous.next = current.next;
+
+                        if (current.next == null)
+                        {
+                            tail = previous;
+                        }
+                    }
+                    else
+                    {
+                        head = head.next;
+
+                        if (head == null)
+                        {
+                            tail = null;
+                        }
+                    }
+
+                    count--;
+                    break;
+                }
+
+                previous = current;
+                current = current.next;
+            }
+        }
+        catch (NullPointerException e)
+        {
+            System.out.println("Method remove: The task does not exist (task = null)");
         }
     }
 
     @Override
     public Task getTask(int index)
     {
-        assert(index >= 0 && index < count);
-
-        if(index == 0) { return head.task; }
-
-        if(index == count - 1) { return tail.task; }
-
-        LinkedTaskList current = head;
-
-        int k = 0;
-        while (k < index)
+        try
         {
-            current = current.next;
-            k++;
-        }
+            if(index < 0 || index >= count)
+            {
+                throw new IndexOutOfBoundsException();
+            }
 
-        return current.task;
+            if(index == 0) { return head.task; }
+
+            if(index == count - 1) { return tail.task; }
+
+            LinkedTaskList current = head;
+
+            int k = 0;
+            while (k < index)
+            {
+                current = current.next;
+                k++;
+            }
+
+            return current.task;
+        }
+        catch (IndexOutOfBoundsException e)
+        {
+            System.out.println("Method getTask: Invalid index");
+        }
+        return null;
     }
 
     public Task[] incoming(int from, int to)
     {
-        Task[] data = new Task[count];
-
-        int k = 0;
-
-        LinkedTaskList current = head;
-
-        for (int i = 0; i < count; i++)
+        try
         {
-            if(current.task.isActive())
+            if (to <= from || to < 0 || from < 0)
             {
-                if(current.task.isRepeated())
+                throw new IllegalArgumentException();
+            }
+
+            Task[] data = new Task[count];
+
+            int k = 0;
+
+            LinkedTaskList current = head;
+
+            for (int i = 0; i < count; i++)
+            {
+                if(current.task.isActive())
                 {
-                    for(int j =current.task.start; j <= current.task.end; j += current.task.repeat)
+                    if(current.task.isRepeated())
                     {
-                        if(j > from && j <= to)
+                        for(int j =current.task.start; j <= current.task.end; j += current.task.repeat)
+                        {
+                            if(j > from && j <= to)
+                            {
+                                data[k] = current.task;
+                                k++;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (current.task.time > from && current.task.time <= to)
                         {
                             data[k] = current.task;
                             k++;
-                            break;
                         }
                     }
                 }
-                else
-                {
-                    if (current.task.time > from && current.task.time <= to)
-                    {
-                        data[k] = current.task;
-                        k++;
-                    }
-                }
+                current = current.next;
             }
-            current = current.next;
+
+            Task[] incoming = new Task[k];
+            if(k > 0)
+            {
+                System.arraycopy(data, 0, incoming, 0, k);
+            }
+            return incoming;
         }
 
-        Task[] incoming = new Task[k];
-        if(k > 0)
+        catch (IllegalArgumentException e)
         {
-            System.arraycopy(data, 0, incoming, 0, k);
+            System.out.println("Method incoming: Invalid from and to");
         }
-        return incoming;
+
+        return null;
+
     }
 
 

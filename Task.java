@@ -17,6 +17,28 @@ public class Task
     protected boolean active;
 
     /**
+     * Task class constructor for a one-time tasks
+     * A new task is considered inactive when created
+     * @param title - task title
+     * @param time - task alert time
+     */
+    public Task(String title, int time)
+    {
+        try
+        {
+            check(time);
+
+            setTitle(title);
+            setTime(time);
+            setActive(false);
+        }
+        catch (IllegalArgumentException e)
+        {
+            System.out.println("Incorrect data for a one-time tasks");
+        }
+    }
+
+    /**
      * Task class constructor for a repeated tasks
      * A new task is considered inactive when created
      * @param title - task title
@@ -26,9 +48,12 @@ public class Task
      */
     public Task(String title, int start, int end, int repeat)
     {
-        if(check(start, end, repeat))
+        try
         {
+            check(start, end, repeat);
+
             setTitle(title);
+
             if(repeat == 0)
             {
                 setTime(start);
@@ -37,10 +62,45 @@ public class Task
             {
                 setTime(start, end, repeat);
             }
+
             setActive(false);
         }
-        else System.out.print("Incorrect data");
+        catch (IllegalArgumentException e)
+        {
+            System.out.println("Incorrect data for a repeated tasks");
+        }
+
     }
+
+    /**
+     * Method for data validation for a one-time task
+     * @param time - parameter to check
+     * @return true if the data is correct
+     */
+    public void check(int time)
+    {
+        if(time < 0)
+        {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     * Method for data validation for a repeated task
+     * @param start - parameter to check
+     * @param end - parameter to check
+     * @param repeat - parameter to check
+     * @return true if the data is correct
+     */
+    public void check(int start, int end, int repeat)
+    {
+        if (start > end || start < 0 || end < 0 || repeat < 0)
+        {
+            throw new IllegalArgumentException();
+        }
+    }
+
+
 
     /**
      * Method to get the title of the task
@@ -164,6 +224,7 @@ public class Task
      * Method that returns a description of the given task
      * @return description string
      */
+    @Override
     public String toString()
     {
         if(!isActive()) return "Task " + title + " is inactive";
@@ -221,43 +282,6 @@ public class Task
         return nt;
     }
 
-    /**
-     * Method for data validation for a one-time task
-     * @param time - parameter to check
-     * @return true if the data is correct
-     */
-    public boolean check(int time)
-    {
-        return time >= 0;
-    }
 
-    /**
-     * Method for data validation for a repeated task
-     * @param start - parameter to check
-     * @param end - parameter to check
-     * @param repeat - parameter to check
-     * @return true if the data is correct
-     */
-    public boolean check(int start, int end, int repeat)
-    {
-        return start <= end && start >= 0 && end >= 0 && repeat >= 0;
-    }
-
-    /**
-     * Task class constructor for a one-time tasks
-     * A new task is considered inactive when created
-     * @param title - task title
-     * @param time - task alert time
-     */
-    public Task(String title, int time)
-    {
-        if (check(time))
-        {
-            setTitle(title);
-            setTime(time);
-            setActive(false);
-        }
-        else System.out.print("Incorrect data");
-    }
 
 }
