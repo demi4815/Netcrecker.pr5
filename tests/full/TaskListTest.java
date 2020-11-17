@@ -49,6 +49,7 @@ public class TaskListTest {
         Task[] expectedTs = {ts[0], ts[2], ts[1], ts[2]};
         assertEqualTasks(expectedTs, tasks);
     }
+
     @Test
     public void testRemove() {
         Task[] ts = {new Task("a",0), new Task("b",1), new Task("c",2)};

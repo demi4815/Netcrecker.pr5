@@ -35,6 +35,7 @@ public class Task
         catch (IllegalArgumentException e)
         {
             System.out.println("Incorrect data for a one-time tasks");
+            throw e;
         }
     }
 
@@ -68,6 +69,7 @@ public class Task
         catch (IllegalArgumentException e)
         {
             System.out.println("Incorrect data for a repeated tasks");
+            throw e;
         }
 
     }
@@ -245,6 +247,11 @@ public class Task
      */
     public int nextTimeAfter(int time)
     {
+        if (time < 0)
+        {
+            throw new IllegalArgumentException("Method nextTimeAfter: Invalid time");
+        }
+
         int nt = -1;
 
         if(isActive())

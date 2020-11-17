@@ -24,8 +24,8 @@ public class Main {
         Task task2 = new Task("B", 5, 10, 1);
         ArrayTaskList list = new ArrayTaskList();
         list.add(task1);
-        list.add(task2);
-        System.out.print(list.getTask(2));*/
+        list.add(task2);*/
+
 
         /*Task task1 = new Task("A", 1);
         Task task2 = new Task("B", 5, 10, 1);
@@ -39,6 +39,18 @@ public class Main {
         {
             System.out.println(task);
         }*/
+
+        /*Task task1 = new Task("A", 1);
+        Task task2 = new Task("B", 5, 10, 1);
+        Task task3 = new Task("C", 4, 10, 1);
+        Task task4 = new Task("D", 3);
+        ArrayTaskList list = new ArrayTaskList();
+        list.add(task1);
+        list.add(task2);
+        list.add(task3);
+        list.add(1, task4);
+
+        System.out.print(list.getTask(3));*/
 
 
 

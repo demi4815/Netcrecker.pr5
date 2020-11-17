@@ -85,6 +85,7 @@ public class ArrayTaskListTest {
             tasks.getTask(i).setActive(true);
         assertContains(incoming, tasks.incoming(11, 36));
     }
+
 }
 
 

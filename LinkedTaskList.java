@@ -48,6 +48,7 @@ public class LinkedTaskList extends AbstractTaskList
         catch (NullPointerException e)
         {
             System.out.println("Method add: The task does not exist (task = null)");
+            throw e;
         }
     }
 
@@ -102,10 +103,12 @@ public class LinkedTaskList extends AbstractTaskList
         catch (NullPointerException e)
         {
             System.out.println("Method add: The task does not exist (task = null)");
+            throw e;
         }
         catch (IndexOutOfBoundsException e)
         {
             System.out.println("Method add: Invalid index");
+            throw e;
         }
     }
 
@@ -156,102 +159,78 @@ public class LinkedTaskList extends AbstractTaskList
         catch (NullPointerException e)
         {
             System.out.println("Method remove: The task does not exist (task = null)");
+            throw e;
         }
     }
 
     @Override
     public Task getTask(int index)
     {
-        try
-        {
-            if(index < 0 || index >= count)
-            {
-                throw new IndexOutOfBoundsException();
-            }
-
-            if(index == 0) { return head.task; }
-
-            if(index == count - 1) { return tail.task; }
-
-            LinkedTaskList current = head;
-
-            int k = 0;
-            while (k < index)
-            {
-                current = current.next;
-                k++;
-            }
-
-            return current.task;
+        if (index < 0 || index >= count) {
+            throw new IndexOutOfBoundsException("Method getTask: Invalid index");
         }
-        catch (IndexOutOfBoundsException e)
-        {
-            System.out.println("Method getTask: Invalid index");
+
+        if (index == 0) {
+            return head.task;
         }
-        return null;
+
+        if (index == count - 1) {
+            return tail.task;
+        }
+
+        LinkedTaskList current = head;
+
+        int k = 0;
+        while (k < index) {
+            current = current.next;
+            k++;
+        }
+
+        return current.task;
     }
 
     public Task[] incoming(int from, int to)
     {
-        try
+        if (to <= from || to < 0 || from < 0)
         {
-            if (to <= from || to < 0 || from < 0)
-            {
-                throw new IllegalArgumentException();
-            }
+            throw new IllegalArgumentException("Method incoming: Invalid from and to");
+        }
 
-            Task[] data = new Task[count];
+        Task[] data = new Task[count];
 
-            int k = 0;
+        int k = 0;
 
-            LinkedTaskList current = head;
+        LinkedTaskList current = head;
 
-            for (int i = 0; i < count; i++)
-            {
-                if(current.task.isActive())
-                {
-                    if(current.task.isRepeated())
+        for (int i = 0; i < count; i++) {
+            if (current.task.isActive()) {
+                if (current.task.isRepeated()) {
+                    for (int j = current.task.start; j <= current.task.end; j += current.task.repeat)
                     {
-                        for(int j =current.task.start; j <= current.task.end; j += current.task.repeat)
-                        {
-                            if(j > from && j <= to)
-                            {
-                                data[k] = current.task;
-                                k++;
-                                break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (current.task.time > from && current.task.time <= to)
-                        {
+                        if (j > from && j <= to) {
                             data[k] = current.task;
                             k++;
+                            break;
                         }
                     }
                 }
-                current = current.next;
+                else {
+                    if (current.task.time > from && current.task.time <= to)
+                    {
+                        data[k] = current.task;
+                        k++;
+                    }
+                }
             }
-
-            Task[] incoming = new Task[k];
-            if(k > 0)
-            {
-                System.arraycopy(data, 0, incoming, 0, k);
-            }
-            return incoming;
+            current = current.next;
         }
 
-        catch (IllegalArgumentException e)
+        Task[] incoming = new Task[k];
+        if (k > 0)
         {
-            System.out.println("Method incoming: Invalid from and to");
+            System.arraycopy(data, 0, incoming, 0, k);
         }
-
-        return null;
-
+        return incoming;
     }
-
-
-
 
 }
